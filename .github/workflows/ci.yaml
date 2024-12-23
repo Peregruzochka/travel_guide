@@ -1,0 +1,39 @@
+name: Travel Guide Service CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  job_one:
+    name: Build and test
+    runs-on: ubuntu-latest
+    services:
+      master_postgres:
+        image: postgres:13.3
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout to remote machine
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17 and cache Gradle dependencies
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'gradle'
+
+      - name: Grant execute permissions for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Test
+        run: ./gradlew test
