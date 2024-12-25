@@ -17,7 +17,7 @@ public class User {
     @Id
     private UUID id;
 
-    private String name;
+    private String username;
 
     @OneToMany
     private List<Comment> comments;

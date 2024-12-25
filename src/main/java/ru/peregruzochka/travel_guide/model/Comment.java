@@ -23,7 +23,7 @@ public class Comment {
     @ManyToOne
     private User user;
 
-    private String text;
+    private String content;
 
     private int grade;
 

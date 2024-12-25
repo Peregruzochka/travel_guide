@@ -20,7 +20,7 @@ public class Sight {
     @Id
     private UUID id;
 
-    private String name;
+    private String sightName;
 
     @ManyToOne
     private City city;
