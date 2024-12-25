@@ -4,12 +4,13 @@ CREATE TABLE cities(
 );
 
 CREATE TABLE sights(
-    id              UUID                PRIMARY KEY,
-    sight_name      VARCHAR(256)        NOT NULL,
-    sight_type      VARCHAR(128)        NOT NULL,
-    lan             DOUBLE PRECISION    NOT NULL,
-    lon             DOUBLE PRECISION    NOT NULL,
-    city_id         UUID                NOT NULL,
+    id                  UUID                PRIMARY KEY,
+    sight_name          VARCHAR(256)        NOT NULL,
+    sight_description   VARCHAR(4096),
+    sight_type          VARCHAR(128)        NOT NULL,
+    lat                 DOUBLE PRECISION    NOT NULL,
+    lon                 DOUBLE PRECISION    NOT NULL,
+    city_id             UUID                NOT NULL,
 
     CONSTRAINT fk_city_id FOREIGN KEY (city_id) REFERENCES cities(id)
 );
