@@ -13,6 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,12 +42,12 @@ public class Sight {
     @Enumerated(EnumType.STRING)
     private SightType type;
 
-    @Column(name = "lon", nullable = false)
-    private double lon;
-
-    @Column(name = "lat", nullable = false)
-    private double lat;
+    @Column(name = "geom", columnDefinition = "geometry(Point,4326)", nullable = false)
+    private Point geom;
 
     @OneToMany(mappedBy = "sight")
     private List<Comment> comments;
+
+    @Column(name = "avg_grade", nullable = false)
+    private float avgGrade;
 }
