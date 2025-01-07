@@ -11,7 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
@@ -21,6 +24,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "sights")
 public class Sight {
 
@@ -42,8 +48,8 @@ public class Sight {
     @Enumerated(EnumType.STRING)
     private SightType type;
 
-    @Column(name = "geom", columnDefinition = "geometry(Point,4326)", nullable = false)
-    private Point geom;
+    @Column(name = "sight_location", nullable = false)
+    private Point location;
 
     @OneToMany(mappedBy = "sight")
     private List<Comment> comments;

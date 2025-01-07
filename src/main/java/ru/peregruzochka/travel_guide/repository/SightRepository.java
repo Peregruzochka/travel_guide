@@ -9,6 +9,4 @@ import java.util.UUID;
 
 @Repository
 public interface SightRepository extends JpaRepository<Sight, UUID>, JpaSpecificationExecutor<Sight> {
-
-
 }

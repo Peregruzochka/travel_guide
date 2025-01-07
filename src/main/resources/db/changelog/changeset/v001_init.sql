@@ -8,12 +8,14 @@ CREATE TABLE sights(
     sight_name          VARCHAR(256)            NOT NULL,
     sight_description   VARCHAR(4096),
     sight_type          VARCHAR(128)            NOT NULL,
-    geom                GEOMETRY(Point, 4326)   NOT NULL,
+    sight_location      GEOMETRY(Point, 4326)   NOT NULL,
     city_id             UUID                    NOT NULL,
     avg_grade           FLOAT                   NOT NULL,
 
     CONSTRAINT fk_city_id FOREIGN KEY (city_id) REFERENCES cities(id)
 );
+
+CREATE INDEX idx_sights_geom ON sights USING GIST (sight_location);
 
 CREATE TABLE users(
     id              UUID                PRIMARY KEY,
@@ -31,6 +33,8 @@ CREATE TABLE comments(
     CONSTRAINT fk_user_id   FOREIGN KEY (user_id)   REFERENCES users(id),
     CONSTRAINT fk_sight_id  FOREIGN KEY (sight_id)  REFERENCES sights(id)
 );
+
+
 
 
 

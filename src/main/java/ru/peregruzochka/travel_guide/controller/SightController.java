@@ -21,15 +21,22 @@ public class SightController {
     private final SightService sightService;
     private final SightMapper sightMapper;
 
-    @PostMapping
+    @PostMapping("/search")
     public List<SightDto> getSights(@RequestParam double lat,
                                     @RequestParam double lon,
-                                    @RequestParam(name = "radius") int searchRadius, //metres
+                                    @RequestParam(name = "radius", defaultValue = "10000") int searchRadius, //metres
                                     @RequestParam(defaultValue = "10") int size,
-                                    @RequestParam(defaultValue = "LOCATION") SortedType sortedType,
-                                    @RequestBody SightFilterDto sightFilterDto
+                                    @RequestParam(name = "sort-type", defaultValue = "LOCATION") SortedType sortType,
+                                    @RequestBody(required = false) SightFilterDto sightFilterDto
                                     ) {
-        List<Sight> sights = sightService.getNearSortedSightByFilter(lat, lon, searchRadius, size, sortedType, sightFilterDto);
+        List<Sight> sights = sightService.getNearSortedSightByFilter(lat, lon, searchRadius, size, sortType, sightFilterDto);
         return sightMapper.toSightDtoList(sights);
+    }
+
+    @PostMapping
+    public SightDto createSight(@RequestBody SightDto sightDto) {
+        Sight newSight = sightMapper.toSightEntity(sightDto);
+        Sight savedSight = sightService.createSight(newSight);
+        return sightMapper.toSightDto(savedSight);
     }
 }

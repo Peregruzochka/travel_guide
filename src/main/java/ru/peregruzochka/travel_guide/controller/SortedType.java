@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum SortedType {
-    GRADE("avg_grade"),
+    GRADE("avgGrade"),
     LOCATION("location");
 
     private final String value;

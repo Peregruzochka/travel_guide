@@ -10,24 +10,16 @@ import java.util.List;
 
 
 public class SightSpecification {
-    public static Specification<Sight> inArea(double lat, double lon, int radius) {
+    public static Specification<Sight> inArea(Point userLocation, int radius) {
         return ((root, query, criteriaBuilder) -> {
-            Expression<?> point = criteriaBuilder.function(
-                    "ST_SetSRID",
-                    Point.class,
-                    criteriaBuilder.function("ST_MakePoint", Double.class, criteriaBuilder.literal(lon), criteriaBuilder.literal(lat)),
-                    criteriaBuilder.literal(4326)
+            Expression<Double> distance = criteriaBuilder.function(
+                    "ST_DistanceSphere",
+                    Double.class,
+                    root.get("location"),
+                    criteriaBuilder.literal(userLocation)
             );
 
-            Expression<Boolean> within = criteriaBuilder.function(
-                    "ST_DWithin",
-                    Boolean.class,
-                    root.get("geom"),
-                    point,
-                    criteriaBuilder.literal(radius)
-            );
-
-            return criteriaBuilder.isTrue(within);
+            return criteriaBuilder.lessThanOrEqualTo(distance, (double) radius);
         });
     }
 
