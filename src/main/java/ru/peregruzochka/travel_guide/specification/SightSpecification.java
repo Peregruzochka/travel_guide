@@ -37,4 +37,17 @@ public class SightSpecification {
         return null;
     }
 
+    public static Specification<Sight> sortedByDistance(Point userLocation) {
+        return (root, query, criteriaBuilder) -> {
+            Expression<Double> distance = criteriaBuilder.function(
+                    "ST_Distance",
+                    Double.class,
+                    root.get("location"),
+                    criteriaBuilder.literal(userLocation)
+            );
+
+            query.orderBy(criteriaBuilder.asc(distance));
+            return criteriaBuilder.conjunction();
+        };
+    }
 }

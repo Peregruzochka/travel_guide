@@ -21,7 +21,9 @@ import ru.peregruzochka.travel_guide.specification.SightSpecification;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.peregruzochka.travel_guide.controller.SortedType.LOCATION;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static ru.peregruzochka.travel_guide.controller.SortedType.DISTANCE;
+import static ru.peregruzochka.travel_guide.controller.SortedType.GRADE;
 
 @Service
 @RequiredArgsConstructor
@@ -30,22 +32,25 @@ public class SightService {
     private final CityRepository cityRepository;
 
     @Transactional(readOnly = true)
-    public List<Sight> getNearSortedSightByFilter(double lat, double lon, int searchRadius, int size,
-                                                  SortedType sortedType,
-                                                  SightFilterDto sightFilterDto) {
-
-        PageRequest pageRequest = PageRequest.ofSize(size);
-        if (!sortedType.equals(LOCATION)) {
-            pageRequest = PageRequest.of(1, size, Sort.by(Sort.Direction.DESC, sortedType.getValue()));
-        }
+    public List<Sight> getNearSightByOrderAndFilters(double lat, double lon, int searchRadius,
+                                                     SortedType sortedType,
+                                                     SightFilterDto sightFilterDto,
+                                                     int limit) {
 
         GeometryFactory factory = new GeometryFactory(new PrecisionModel(), 4326);
         Point userLocation = factory.createPoint(new Coordinate(lon, lat));
 
         Specification<Sight> spec = Specification.where(SightSpecification.inArea(userLocation, searchRadius));
         if (sightFilterDto != null) {
-            spec.and(SightSpecification.moreThenAvgGrade(sightFilterDto.getAverageGrade()))
+            spec = spec.and(SightSpecification.moreThenAvgGrade(sightFilterDto.getAverageGrade()))
                     .and(SightSpecification.withTypes(sightFilterDto.getTypes()));
+        }
+
+        PageRequest pageRequest = PageRequest.ofSize(limit);
+        if (sortedType.equals(DISTANCE)) {
+            spec = spec.and(SightSpecification.sortedByDistance(userLocation));
+        } else if (sortedType.equals(GRADE)) {
+            pageRequest = PageRequest.of(0, limit, Sort.by(DESC, "avgGrade"));
         }
 
         List<Sight> sights = sightRepository.findAll(spec, pageRequest).getContent();

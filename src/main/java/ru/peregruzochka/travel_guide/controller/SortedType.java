@@ -5,12 +5,6 @@ import lombok.Getter;
 
 @Getter
 public enum SortedType {
-    GRADE("avgGrade"),
-    LOCATION("location");
-
-    private final String value;
-
-    SortedType(String value) {
-        this.value = value;
-    }
+    GRADE,
+    DISTANCE,
 }

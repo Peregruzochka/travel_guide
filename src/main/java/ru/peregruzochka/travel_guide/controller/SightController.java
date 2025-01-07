@@ -21,15 +21,15 @@ public class SightController {
     private final SightService sightService;
     private final SightMapper sightMapper;
 
-    @PostMapping("/search")
+    @PostMapping("/distance-search")
     public List<SightDto> getSights(@RequestParam double lat,
                                     @RequestParam double lon,
                                     @RequestParam(name = "radius", defaultValue = "10000") int searchRadius, //metres
-                                    @RequestParam(defaultValue = "10") int size,
                                     @RequestParam(name = "sort-type", defaultValue = "LOCATION") SortedType sortType,
-                                    @RequestBody(required = false) SightFilterDto sightFilterDto
-                                    ) {
-        List<Sight> sights = sightService.getNearSortedSightByFilter(lat, lon, searchRadius, size, sortType, sightFilterDto);
+                                    @RequestBody(required = false) SightFilterDto sightFilterDto,
+                                    @RequestParam(defaultValue = "10") int limit
+    ) {
+        List<Sight> sights = sightService.getNearSightByOrderAndFilters(lat, lon, searchRadius, sortType, sightFilterDto, limit);
         return sightMapper.toSightDtoList(sights);
     }
 
