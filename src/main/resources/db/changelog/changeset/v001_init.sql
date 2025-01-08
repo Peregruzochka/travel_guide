@@ -11,6 +11,7 @@ CREATE TABLE sights(
     sight_location      GEOMETRY(Point, 4326)   NOT NULL,
     city_id             UUID                    NOT NULL,
     avg_grade           FLOAT                   NOT NULL,
+    version             BIGINT DEFAULT(0)       NOT NULL,
 
     CONSTRAINT fk_city_id FOREIGN KEY (city_id) REFERENCES cities(id)
 );

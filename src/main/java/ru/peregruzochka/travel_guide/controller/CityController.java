@@ -12,7 +12,7 @@ import ru.peregruzochka.travel_guide.service.CityService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/city")
+@RequestMapping("/cities")
 public class CityController {
     private final CityService cityService;
     private final CityMapper cityMapper;

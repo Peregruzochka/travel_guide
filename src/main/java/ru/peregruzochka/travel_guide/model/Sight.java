@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,4 +57,7 @@ public class Sight {
 
     @Column(name = "avg_grade", nullable = false)
     private float avgGrade;
+
+    @Version
+    private int version;
 }

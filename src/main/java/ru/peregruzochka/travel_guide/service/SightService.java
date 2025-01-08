@@ -31,6 +31,17 @@ public class SightService {
     private final SightRepository sightRepository;
     private final CityRepository cityRepository;
 
+    @Transactional
+    public Sight createSight(Sight sight) {
+        UUID cityId = sight.getCity().getId();
+        City city = cityRepository.findById(cityId).orElseThrow();
+        sight.setCity(city);
+        sight.setAvgGrade(0.0f);
+        Sight savedSight = sightRepository.save(sight);
+
+        return savedSight;
+    }
+
     @Transactional(readOnly = true)
     public List<Sight> getNearSightByOrderAndFilters(double lat, double lon, int searchRadius,
                                                      SortedType sortedType,
@@ -57,13 +68,32 @@ public class SightService {
         return sights;
     }
 
-    @Transactional
-    public Sight createSight(Sight sight) {
-        UUID cityId = sight.getCity().getId();
-        City city = cityRepository.findById(cityId).orElseThrow();
-        sight.setCity(city);
-        sight.setAvgGrade(0.0f);
-        Sight savedSight = sightRepository.save(sight);
-        return savedSight;
+    @Transactional(readOnly = true)
+    public List<Sight> getCitySightByOrderAndFilters(UUID cityId,
+                                                     SortedType sortType,
+                                                     SightFilterDto sightFilterDto,
+                                                     int limit) {
+
+        Specification<Sight> spec = Specification.where(SightSpecification.inCity(cityId));
+        if (sightFilterDto != null) {
+            spec = spec.and(SightSpecification.moreThenAvgGrade(sightFilterDto.getAverageGrade()))
+                    .and(SightSpecification.withTypes(sightFilterDto.getTypes()));
+        }
+
+        PageRequest pageRequest = PageRequest.ofSize(limit);
+        if (sortType.equals(GRADE)) {
+            pageRequest = PageRequest.of(0, limit, Sort.by(DESC, "avgGrade"));
+        }
+
+        List<Sight> sights = sightRepository.findAll(spec, pageRequest).getContent();
+
+        return sights;
+    }
+
+    @Transactional(readOnly = true)
+    public Sight getSightById(UUID sightId) {
+        Sight sight = sightRepository.findById(sightId).orElseThrow();
+
+        return sight;
     }
 }

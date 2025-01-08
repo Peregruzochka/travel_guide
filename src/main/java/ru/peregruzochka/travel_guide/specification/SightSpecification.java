@@ -7,6 +7,7 @@ import ru.peregruzochka.travel_guide.model.Sight;
 import ru.peregruzochka.travel_guide.model.SightType;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class SightSpecification {
@@ -21,6 +22,9 @@ public class SightSpecification {
 
             return criteriaBuilder.lessThanOrEqualTo(distance, (double) radius);
         });
+    }
+    public static Specification<Sight> inCity(UUID cityId) {
+        return (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("city").get("id"), cityId)));
     }
 
     public static Specification<Sight> moreThenAvgGrade(Float avgGrade) {
