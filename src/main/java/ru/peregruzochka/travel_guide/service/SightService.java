@@ -1,6 +1,7 @@
 package ru.peregruzochka.travel_guide.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -25,6 +26,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 import static ru.peregruzochka.travel_guide.controller.SortedType.DISTANCE;
 import static ru.peregruzochka.travel_guide.controller.SortedType.GRADE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SightService {
@@ -38,7 +40,7 @@ public class SightService {
         sight.setCity(city);
         sight.setAvgGrade(0.0f);
         Sight savedSight = sightRepository.save(sight);
-
+        log.info("Saved sight: {}", savedSight);
         return savedSight;
     }
 
@@ -65,6 +67,7 @@ public class SightService {
         }
 
         List<Sight> sights = sightRepository.findAll(spec, pageRequest).getContent();
+        log.info("Found {} sights", sights.size());
         return sights;
     }
 
@@ -86,14 +89,14 @@ public class SightService {
         }
 
         List<Sight> sights = sightRepository.findAll(spec, pageRequest).getContent();
-
+        log.info("Found {} sights", sights.size());
         return sights;
     }
 
     @Transactional(readOnly = true)
     public Sight getSightById(UUID sightId) {
         Sight sight = sightRepository.findById(sightId).orElseThrow();
-
+        log.info("Found sight: {}", sight);
         return sight;
     }
 }

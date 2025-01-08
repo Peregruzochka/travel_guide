@@ -1,6 +1,7 @@
 package ru.peregruzochka.travel_guide.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import ru.peregruzochka.travel_guide.repository.UserRepository;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -42,7 +44,7 @@ public class CommentService {
         comment.setSight(sight);
         comment.setUser(user);
         Comment savedComment = commentRepository.save(comment);
-
+        log.info("Comment created: {}", savedComment);
         return savedComment;
     }
 
@@ -53,7 +55,7 @@ public class CommentService {
         }
         Pageable pageable = PageRequest.of(page, limit);
         Page<Comment> comments = commentRepository.findBySightId(sightId, pageable);
-
+        log.info("Get comments Count: {}", comments.getTotalElements());
         return comments.getContent();
     }
 }
